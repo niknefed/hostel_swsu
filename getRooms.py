@@ -4,7 +4,6 @@ from PyQt5.QtSql import QSqlTableModel
 from lodgers import Ui_lodgers
 
 
-# новый класс
 class Lodgers(QtWidgets.QMainWindow, Ui_lodgers):
     def __init__(self, parent=None):
         super(Lodgers, self).__init__(parent)

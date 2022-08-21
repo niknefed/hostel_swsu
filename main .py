@@ -3,6 +3,7 @@ from mainWindow import Ui_MainWindow
 from PyQt5 import QtGui, QtWidgets
 from PyQt5.QtCore import Qt
 from getRooms import Lodgers
+from Roms import Ui_Rooms
 
 
 class ExampleApp(QtWidgets.QMainWindow, Ui_MainWindow):
@@ -10,10 +11,7 @@ class ExampleApp(QtWidgets.QMainWindow, Ui_MainWindow):
         super().__init__()
         self.scene = QtWidgets.QGraphicsScene()
         self.setupUi(self)
-        self.lodgers = Lodgers()
-        self.lodgers.pushButton_8.clicked.connect(self.returnMainWindow1)
 
-        self.rоом_beds = []
         self.rоом_rect = {
             '131': 0,
             '132': 1,
@@ -26,26 +24,20 @@ class ExampleApp(QtWidgets.QMainWindow, Ui_MainWindow):
         }
 
 
+        self.lodgers = Lodgers()
         self.pushButton_7.clicked.connect(self.openlodgers)
-        # Функция закрытия главного окна по кнопке Выход
+        self.lodgers.pushButton_8.clicked.connect(self.returnMainWindow)
+
+        # self.pushButton_11.clicked.connect(self.openrooms)
+
         self.pushButton_4.clicked.connect(self.close)
         self.scene.addPixmap(QtGui.QPixmap("section_sketch.png"))
-        self.pushButton_8.clicked.connect(self.drowRooms)
-
+        self.lodgers._getRooms()  # формирование списка self.lodgers.rоом_beds
+        self.drowRooms()
         self.graphicsView.setScene(self.scene)
-
 
     # Метод для отрисовки
     def drowRooms(self):
-        if not self.lodgers.rоом_beds:
-            msg = QtWidgets.QMessageBox.information(
-                self,
-                'Message',
-                f'Просматривать рано. \n'
-                f'Нажмите кнопку `Проживающие` и выполните необходимые корректировки.'
-            )
-            return
-
         self.Rooms = []
         self.Rooms.append((
             # Рисование прямоугольников для 131 комнаты (обозначения для того чтобы в дальнеёшем присвоить прямоугольникам имя через список)
@@ -96,21 +88,23 @@ class ExampleApp(QtWidgets.QMainWindow, Ui_MainWindow):
             self.scene.addRect(195, 365, 35, 35, pen=QtGui.QPen(Qt.black), brush=QtGui.QBrush(Qt.green)),  # 1383
             self.scene.addRect(240, 365, 35, 35, pen=QtGui.QPen(Qt.black), brush=QtGui.QBrush(Qt.green))))  # 1384
 
-
         # список сформированный в новом классе
         for k, v in self.lodgers.rоом_beds:
             self.Rooms[self.rоом_rect[k]][int(v)].setBrush(QtGui.QBrush(Qt.red))
 
+    def openrooms(self):
+        self.hide()
+        self.rooms.show()
 
     def openlodgers(self):
         self.hide()
         self.lodgers.show()
 
-
     # Функция для возвращения на главное окно (Из окна проживающие) по кнопке Назад
-    def returnMainWindow1(self):
-        self.lodgers._getRooms()  # формирование списка self.lodgers.rоом_beds
+    def returnMainWindow(self):
+        self.lodgers._getRooms()
         self.drowRooms()  # отрисовка
+        self.lodgers._getRooms()  # формирование списка
         self.lodgers.close()
         self.show()
 
